@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.4.2 (Python 3.13.9 on darwin)" generated="2026-03-12T13:04:07.112489" rpa="false" schemaversion="5">
+<suite id="s1" name="Uefi System Configuration Wrapper" source="/Volumes/dev/robot-tests/uefi-sct-wrapper/tests/uefi_system_configuration_wrapper.robot">
+<kw name="Prepare SCT Workspace" owner="uefi_sct_keywords" type="SETUP">
+<kw name="Create Directory" owner="OperatingSystem">
+<msg time="2026-03-12T13:04:07.132988" level="INFO" html="true">Created directory '&lt;a href="file:///Volumes/dev/robot-tests/uefi-sct-wrapper/results"&gt;/Volumes/dev/robot-tests/uefi-sct-wrapper/results&lt;/a&gt;'.</msg>
+<arg>${SCT_RESULTS_DIR}</arg>
+<doc>Creates the specified directory.</doc>
+<status status="PASS" start="2026-03-12T13:04:07.132787" elapsed="0.000239"/>
+</kw>
+<status status="PASS" start="2026-03-12T13:04:07.132565" elapsed="0.000500"/>
+</kw>
+<test id="s1-t1" name="UEFI SCT Wrapper Smoke" line="7">
+<kw name="Assert SCT Command Is Configured" owner="uefi_sct_keywords">
+<kw name="Should Not Be Empty" owner="BuiltIn">
+<msg time="2026-03-12T13:04:07.133557" level="INFO">Length is 47.</msg>
+<arg>${SCT_COMMAND}</arg>
+<arg>msg=Set UEFI_SCT_COMMAND with the command that runs UEFI SCT (for example via QEMU/IPMI/serial harness).</arg>
+<doc>Verifies that the given item is not empty.</doc>
+<status status="PASS" start="2026-03-12T13:04:07.133371" elapsed="0.000205"/>
+</kw>
+<status status="PASS" start="2026-03-12T13:04:07.133286" elapsed="0.000315"/>
+</kw>
+<kw name="Execute System Configuration Test" owner="uefi_sct_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-03-12T13:04:07.134020" level="INFO">Starting process:
+bash -lc "python3 -c \"print(\\\"SCT: Passed=42 Failed=0\\\")\""</msg>
+<msg time="2026-03-12T13:04:07.135846" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-03-12T13:04:07.241413" level="INFO">Process completed.</msg>
+<msg time="2026-03-12T13:04:07.241681" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>bash</arg>
+<arg>-lc</arg>
+<arg>${SCT_COMMAND}</arg>
+<arg>cwd=${SCT_WORKDIR}</arg>
+<arg>timeout=${SCT_COMMAND_TIMEOUT_SECONDS}s</arg>
+<arg>stdout=${SCT_STDOUT_FILE}</arg>
+<arg>stderr=${SCT_STDERR_FILE}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-03-12T13:04:07.133725" elapsed="0.107983"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" start="2026-03-12T13:04:07.241799" elapsed="0.000074"/>
+</return>
+<msg time="2026-03-12T13:04:07.241995" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<doc>Runs external UEFI SCT command and writes stdout/stderr to files.</doc>
+<status status="PASS" start="2026-03-12T13:04:07.133655" elapsed="0.108352"/>
+</kw>
+<kw name="Validate SCT Exit Code" owner="uefi_sct_keywords">
+<kw name="Evaluate" owner="BuiltIn">
+<msg time="2026-03-12T13:04:07.242808" level="INFO">${is_allowed} = True</msg>
+<var>${is_allowed}</var>
+<arg>str($result.rc) in $SCT_EXPECTED_EXIT_CODES</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="PASS" start="2026-03-12T13:04:07.242402" elapsed="0.000419"/>
+</kw>
+<kw name="Should Be True" owner="BuiltIn">
+<arg>${is_allowed}</arg>
+<arg>msg=Unexpected SCT exit code: ${result.rc}. Allowed: ${SCT_EXPECTED_EXIT_CODES}</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="PASS" start="2026-03-12T13:04:07.242871" elapsed="0.000406"/>
+</kw>
+<arg>${result}</arg>
+<status status="PASS" start="2026-03-12T13:04:07.242181" elapsed="0.001123"/>
+</kw>
+<kw name="Validate SCT Summary" owner="uefi_sct_keywords">
+<kw name="Get File" owner="OperatingSystem">
+<msg time="2026-03-12T13:04:07.245517" level="INFO" html="true">Getting file '&lt;a href="file:///Volumes/dev/robot-tests/uefi-sct-wrapper/results/sct_stdout.log"&gt;/Volumes/dev/robot-tests/uefi-sct-wrapper/results/sct_stdout.log&lt;/a&gt;'.</msg>
+<msg time="2026-03-12T13:04:07.245612" level="INFO">${stdout_text} = SCT: Passed=42 Failed=0
+</msg>
+<var>${stdout_text}</var>
+<arg>${SCT_STDOUT_FILE}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<status status="PASS" start="2026-03-12T13:04:07.243510" elapsed="0.002113"/>
+</kw>
+<kw name="Get File" owner="OperatingSystem">
+<msg time="2026-03-12T13:04:07.245740" level="INFO" html="true">Getting file '&lt;a href="file:///Volumes/dev/robot-tests/uefi-sct-wrapper/results/sct_stderr.log"&gt;/Volumes/dev/robot-tests/uefi-sct-wrapper/results/sct_stderr.log&lt;/a&gt;'.</msg>
+<msg time="2026-03-12T13:04:07.245799" level="INFO">${stderr_text} = </msg>
+<var>${stderr_text}</var>
+<arg>${SCT_STDERR_FILE}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<status status="PASS" start="2026-03-12T13:04:07.245671" elapsed="0.000137"/>
+</kw>
+<kw name="Catenate" owner="BuiltIn">
+<msg time="2026-03-12T13:04:07.245992" level="INFO">${combined} = SCT: Passed=42 Failed=0
+
+</msg>
+<var>${combined}</var>
+<arg>SEPARATOR=\n</arg>
+<arg>${stdout_text}</arg>
+<arg>${stderr_text}</arg>
+<doc>Catenates the given items together and returns the resulted string.</doc>
+<status status="PASS" start="2026-03-12T13:04:07.245847" elapsed="0.000155"/>
+</kw>
+<if>
+<branch type="IF" condition="${SCT_REQUIRE_NONEMPTY_LOG}">
+<kw name="Should Not Be Empty" owner="BuiltIn">
+<msg time="2026-03-12T13:04:07.246234" level="INFO">Length is 25.</msg>
+<arg>${combined}</arg>
+<arg>msg=SCT logs are empty. Check launcher command and transport.</arg>
+<doc>Verifies that the given item is not empty.</doc>
+<status status="PASS" start="2026-03-12T13:04:07.246110" elapsed="0.000141"/>
+</kw>
+<status status="PASS" start="2026-03-12T13:04:07.246047" elapsed="0.000218"/>
+</branch>
+<status status="PASS" start="2026-03-12T13:04:07.246033" elapsed="0.000244"/>
+</if>
+<kw name="Should Match Regexp" owner="BuiltIn">
+<arg>${combined}</arg>
+<arg>${SCT_SUMMARY_REGEX}</arg>
+<arg>msg=SCT summary is not found by regex: ${SCT_SUMMARY_REGEX}</arg>
+<doc>Fails if ``string`` does not match ``pattern`` as a regular expression.</doc>
+<status status="PASS" start="2026-03-12T13:04:07.246316" elapsed="0.000275"/>
+</kw>
+<arg>${result}</arg>
+<status status="PASS" start="2026-03-12T13:04:07.243397" elapsed="0.003221"/>
+</kw>
+<kw name="Validate Required Artifacts" owner="uefi_sct_keywords">
+<for flavor="IN">
+<iter>
+<kw name="File Should Exist" owner="OperatingSystem">
+<arg>${artifact}</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="NOT RUN" start="2026-03-12T13:04:07.246856" elapsed="0.000008"/>
+</kw>
+<var name="${artifact}"/>
+<status status="NOT RUN" start="2026-03-12T13:04:07.246825" elapsed="0.000051"/>
+</iter>
+<var>${artifact}</var>
+<value>@{SCT_REQUIRED_ARTIFACTS}</value>
+<status status="NOT RUN" start="2026-03-12T13:04:07.246764" elapsed="0.000125"/>
+</for>
+<status status="PASS" start="2026-03-12T13:04:07.246687" elapsed="0.000223"/>
+</kw>
+<kw name="Log SCT Output Paths" owner="uefi_sct_keywords">
+<kw name="Log To Console" owner="BuiltIn">
+<arg>SCT stdout: ${SCT_STDOUT_FILE}</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-03-12T13:04:07.247029" elapsed="0.000121"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>SCT stderr: ${SCT_STDERR_FILE}</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-03-12T13:04:07.247186" elapsed="0.000098"/>
+</kw>
+<status status="PASS" start="2026-03-12T13:04:07.246954" elapsed="0.000350"/>
+</kw>
+<doc>Runs configured SCT command and validates summary/result artifacts.</doc>
+<tag>sct</tag>
+<tag>smoke</tag>
+<tag>uefi</tag>
+<tag>wrapper</tag>
+<status status="PASS" start="2026-03-12T13:04:07.133095" elapsed="0.114255"/>
+</test>
+<doc>Wrapper suite for UEFI System Configuration Test (SCT).</doc>
+<status status="PASS" start="2026-03-12T13:04:07.112926" elapsed="0.134730"/>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="1" fail="0" skip="0">sct</stat>
+<stat pass="1" fail="0" skip="0">smoke</stat>
+<stat pass="1" fail="0" skip="0">uefi</stat>
+<stat pass="1" fail="0" skip="0">wrapper</stat>
+</tag>
+<suite>
+<stat name="Uefi System Configuration Wrapper" id="s1" pass="1" fail="0" skip="0">Uefi System Configuration Wrapper</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
